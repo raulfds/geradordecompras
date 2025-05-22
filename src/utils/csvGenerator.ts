@@ -10,35 +10,36 @@ export const generateCSV = ({
   purchaseClass,
   fileName
 }: CSVGenerationParams) => {
-  // Get current date in YYYY-MM-DD format
-  const today = new Date().toISOString().split('T')[0];
+  // Get current date in DD/MM/YYYY format
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const year = today.getFullYear();
+  const formattedDate = `${day}/${month}/${year}`;
   
   // Generate CSV content
   const rows: string[] = [];
   
   // Add header row
-  rows.push('Fornecedor,Loja,CondPag,Produto,Quantidade,Valor,DataEntrega,Local,ClasCompra');
+  rows.push('Fornecedor;Loja;CondPag;Produto;Quantidade;Valor;DataEntrega;Local;ClasCompra');
   
   // Add data rows
   orderData.items.forEach(item => {
-    // Convert price to numeric value (removing currency symbols)
-    let price = item['Prc Compra Totvs'];
-    if (typeof price === 'string') {
-      price = parseFloat(price.replace(/[^\d.,]/g, '').replace(',', '.'));
-    }
-    
     // Create CSV row
     const row = [
       supplier.Codigo,
-      "'01", // With apostrophe as requested
-      paymentCondition,
+      "'01", // Revertendo para valor fixo com aspas simples
+      "'" + paymentCondition, // Adicionando aspa simples antes da condição de pagamento
       item.Produto,
       item.Pedido,
-      price.toString(),
-      today,
-      "'01", // With apostrophe as requested
+      // Usando Prc Compra Totvs para Valor unitário, formatando com 2 casas decimais e vírgula
+      typeof item['Prc Compra Totvs'] === 'number' 
+        ? item['Prc Compra Totvs'].toFixed(2).replace('.', ',')
+        : parseFloat(String(item['Prc Compra Totvs']).replace(/[^\d.,]/g, '').replace(',', '.')).toFixed(2).replace('.', ','),
+      formattedDate, // Using formatted date
+      "'01", // Revertendo para valor fixo com aspas simples
       purchaseClass
-    ].join(',');
+    ].join(';'); // Alterado para ponto e vírgula
     
     rows.push(row);
   });

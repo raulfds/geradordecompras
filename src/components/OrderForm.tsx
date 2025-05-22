@@ -57,15 +57,17 @@ const OrderForm: React.FC<OrderFormProps> = ({
   }, []);
 
   const getSupplierName = (supplier: SupplierData): string => {
-    return supplier['Razao Social'] || supplier.Razao || '';
+    return supplier['Razao Social'] || '';
   };
 
   const getSupplierPaymentCondition = (supplier: SupplierData): string => {
-    return supplier['Cond. Pagto'] || supplier.condPagto || '';
+    return supplier['Cond. Pagto'] || '';
   };
 
   const filteredSuppliers = suppliers.filter(supplier => {
-    const searchLower = searchTerm.toLowerCase();
+    if (!searchTerm) return false;
+    
+    const searchLower = searchTerm.toLowerCase().trim();
     const supplierName = getSupplierName(supplier).toLowerCase();
     const supplierCode = supplier.Codigo.toLowerCase();
     
@@ -87,9 +89,11 @@ const OrderForm: React.FC<OrderFormProps> = ({
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    if (!showResults) setShowResults(true);
-    if (supplier && e.target.value !== getSupplierName(supplier)) {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setShowResults(true);
+    
+    if (supplier && value !== getSupplierName(supplier)) {
       onSupplierChange(null);
     }
   };

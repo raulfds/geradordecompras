@@ -5,6 +5,8 @@ export interface OrderItem {
   'Prc Compra Totvs': string | number;
   Pedido: number;
   Total: number;
+  Loja?: string;
+  Local?: string;
 }
 
 export interface OrderData {

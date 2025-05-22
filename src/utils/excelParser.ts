@@ -48,7 +48,9 @@ export const readExcelFile = async (
           'Ref.Fabricante': String(row['Ref.Fabricante'] || ''),
           'Prc Compra Totvs': row['Prc Compra Totvs'],
           Pedido: typeof row['Pedido'] === 'number' ? row['Pedido'] : parseInt(row['Pedido']),
-          Total: typeof row['Total'] === 'number' ? row['Total'] : parseFloat(String(row['Total']).replace(/[^\d.,]/g, '').replace(',', '.'))
+          Total: typeof row['Total'] === 'number' ? row['Total'] : parseFloat(String(row['Total']).replace(/[^\d.,]/g, '').replace(',', '.')),
+          Loja: String(row['Loja'] || ''),
+          Local: String(row['Local'] || ''),
         }));
         
         // Calculate total
